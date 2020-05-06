@@ -2,6 +2,9 @@
 
 A Particle project named gate-monitor
 
+This just needs an LCD connected to I2C port and listens to the cloud for main_gate_1 and clubhouse_gate_1 events and prints an open/closed state when it sees those.
+
+
 ## Welcome to your project!
 
 Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for gate-monitor.
