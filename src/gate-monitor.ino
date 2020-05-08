@@ -20,6 +20,10 @@ void setup() {
     // listen for Input_1, the relay, to turn on or off from main gate ID and call a handler if it changes, same for clubhouse gate
     Particle.subscribe("main_gate_1", maingateHandler, MY_DEVICES);
     Particle.subscribe("clubhouse_gate_1", clubgateHandler, MY_DEVICES);
+    // Particle.subscribe("light_1", clubgateHandler, MY_DEVICES);
+
+    // do a request for the state and the above subscribes will get called when they see the request
+    Particle.publish("getstate", "1", PRIVATE);
 
 	Serial.begin(115200);
     lcd.init();  //initialize the lcd
