@@ -127,8 +127,8 @@ int mainstatus(String command)
     if(command == "ON")
     {
          lcd.setCursor (0, 1);            
-         // lcd.print("Main Gate: Open     "); 
-         lcd.print("Light: Open     ");
+         lcd.print("Main Gate: Open     "); 
+         // lcd.print("Light: Open     ");
          // pixels.setPixelColor(0, 0,255,0);
          pixels.setPixelColor(0, 0,55,0);
          buttonZeroToggle = 1;
