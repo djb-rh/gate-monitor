@@ -33,6 +33,8 @@ int buttonOneClicks = 0;
 int buttonZeroToggle = 0;
 int buttonOneToggle = 0;
 
+int boottask = 0;
+
 void setup() {
 
     pinMode(buttonZeroPin, INPUT_PULLUP);
@@ -74,6 +76,16 @@ void setup() {
 }
 
 void loop() {
+
+    // if we're connected to the cloud and we haven't done this yet, publish the getstate
+    // need this because cloud connection might not happen for a few seconds, but we can be doing other
+    // things until then
+    if(!boottask){
+        if(Particle.connected()){
+            Particle.publish("getstate", "1");
+            boottask=1;
+        }
+    }
 
     buttonZero.Update();
     buttonOne.Update();
@@ -144,6 +156,7 @@ int mainstatus(String command)
 
     }
     pixels.show();
+    return 1;
 }
 
 void clubgateHandler(const char *eventname, const char *data)
@@ -172,5 +185,6 @@ int clubstatus(String command)
 
     }
     pixels.show();
+    return 1;
 }
 
