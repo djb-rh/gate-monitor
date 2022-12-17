@@ -35,6 +35,9 @@ int buttonOneToggle = 0;
 
 int boottask = 0;
 
+int skipCounter = 0;
+char publishString[40];
+
 void setup() {
 
     pinMode(buttonZeroPin, INPUT_PULLUP);
@@ -56,6 +59,7 @@ void setup() {
     pixels.show();
     // listen for Input_1, the relay, to turn on or off from main gate ID and call a handler if it changes, same for clubhouse gate
     Particle.subscribe("main_gate_1", maingateHandler, MY_DEVICES);
+    // Particle.subscribe("gatetest_1", maingateHandler, MY_DEVICES);
     // Particle.subscribe("light_1", maingateHandler, MY_DEVICES);
     Particle.subscribe("clubhouse_gate_1", clubgateHandler, MY_DEVICES);
     // Particle.subscribe("light_1", clubgateHandler, MY_DEVICES);
@@ -128,63 +132,81 @@ void loop() {
 
 }
 
-void maingateHandler(const char *eventname, const char *data)
+void maingateHandler(const char *eventname, const char *command)
 {
-    // pass the command that was sent to the main gate down to us
-    mainstatus(data);
-}
+    char publishString[40] = "";
 
-int mainstatus(String command)
-{
-    if(command == "ON")
+    if(!strncmp(command, "ON", 2))
     {
+         char countchar = command[3];
          lcd.setCursor (0, 1);            
          lcd.print("Main Gate: Open     "); 
-         // lcd.print("Light: Open     ");
-         // pixels.setPixelColor(0, 0,255,0);
          pixels.setPixelColor(0, 0,55,0);
          buttonZeroToggle = 1;
+        lcd.setCursor(19,1);
+         if (strlen(command) > 2) {
+         // set counter here
+         skipCounter = countchar - '0';
+        sprintf(publishString, "%d", skipCounter);
+        lcd.print(publishString);
+        } else lcd.print("0");
     }
-    if(command == "OFF")
+    if(!strncmp(command, "OFF", 3))
     {
+        char countchar = command[4];
          lcd.setCursor (0, 1);         
          lcd.print("Main Gate: Closed    "); 
-         // lcd.print("Light: Closed    "); 
-         // pixels.setPixelColor(0, 255,0,0);
          pixels.setPixelColor(0, 55,0,0);
          buttonZeroToggle = 0;
+        lcd.setCursor(19,1);
+         if (strlen(command) > 3) {
+         // set counter here
+         skipCounter = countchar - '0';
+        sprintf(publishString, "%d", skipCounter);
+        lcd.print(publishString);
+        } else lcd.print("0");
 
     }
     pixels.show();
-    return 1;
 }
 
-void clubgateHandler(const char *eventname, const char *data)
+void clubgateHandler(const char *eventname, const char *command)
 {
-    // pass the command that was sent to the clubhouse gate down to us
-    clubstatus(data);
-}
+    char publishString[40] = "";
 
-int clubstatus(String command)
-{
-    if(command == "ON")
+    if(!strncmp(command, "ON", 2))
     {
+         char countchar = command[3];
          lcd.setCursor (0, 0);          
          lcd.print("CH Gate: Open     "); 
          // pixels.setPixelColor(1, 0,255,0);
          pixels.setPixelColor(1, 0,55,0);
          buttonOneToggle = 1;
+        lcd.setCursor(19,0);
+         if (strlen(command) > 2) {
+         // set counter here
+         skipCounter = countchar - '0';
+        sprintf(publishString, "%d", skipCounter);
+        lcd.print(publishString);
+        } else lcd.print("0");
     }
-    if(command == "OFF")
+    if(!strncmp(command, "OFF", 3))
     {
+        char countchar = command[4];
          lcd.setCursor (0, 0); 
          lcd.print("CH Gate: Closed    ");
          // pixels.setPixelColor(1, 255,0,0);
          pixels.setPixelColor(1, 55,0,0);
          buttonOneToggle = 0;
+        lcd.setCursor(19,0);
+         if (strlen(command) > 3) {
+         // set counter here
+         skipCounter = countchar - '0';
+        sprintf(publishString, "%d", skipCounter);
+        lcd.print(publishString);
+        } else lcd.print("0");
 
     }
     pixels.show();
-    return 1;
 }
 
