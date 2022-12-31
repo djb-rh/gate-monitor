@@ -5,29 +5,21 @@ A Particle project named gate-monitor
 This just needs an LCD connected to I2C port and listens to the cloud for main_gate_1 and clubhouse_gate_1 events and prints an open/closed state when it sees those.
 
 
-## Welcome to your project!
+## Details
 
-Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for gate-monitor.
+This project is intended to control gates connected to a Particle Photon plugged into an NCD.io relay board and running the [gate-controller](https://github.com/djb-rh/gate-controller) firmware written by Donnie Barnes (and based on the NCD IOT firmware for those boards).
 
-#### ```/src``` folder:  
-This is the source folder that contains the firmware files for your project. It should *not* be renamed. 
-Anything that is in this folder when you compile your project will be sent to our compile service and compiled into a firmware binary for the Particle device that you have targeted.
+It has two buttons and uses the clickButton library for debouncing and long versus short press events. Each button is illuminated via a neopixel LED to show gate status within the physical button. So when the gate is open, the button for that gate is green. When the gate is closed, that button will show as red. There is a "main" gate as well as a "club" gate.
 
-If your application contains multiple files, they should all be included in the `src` folder. If your firmware depends on Particle libraries, those dependencies are specified in the `project.properties` file referenced below.
+There is also a 4 line by 20 character LCD that shows the gate status. This was originally intended as the only output method, but the neopixels were added later. Then we added another function called "skips", explained below. But basically only two lines are used, one for each gate showing the status (open/closed) and how many skips are current for each gate.
 
-#### ```.ino``` file:
-This file is the firmware that will run as the primary application on your Particle device. It contains a `setup()` and `loop()` function, and can be written in Wiring or C/C++. For more information about using the Particle firmware API to create firmware for your Particle device, refer to the [Firmware Reference](https://docs.particle.io/reference/firmware/) section of the Particle documentation.
+We currently use IFTTT to trigger gates on a schedule, but sometimes we want to skip the next IFTTT command (or more than one). This is what skips do.
 
-#### ```project.properties``` file:  
-This is the file that specifies the name and version number of the libraries that your project depends on. Dependencies are added automatically to your `project.properties` file when you add a library to a project using the `particle library add` command in the CLI or add a library in the Desktop IDE.
+How? Will first let's discuss how it all works. Everything is listening to the greater particle cloud. To open the main gate and have it stay open, all one needs to do is publish "main_gate_relay_1 1on" to set the first relay on the main gate controller to on, which will open that gate. To close it, "main_gate_relay_1 1off". When a state is changed, the gate doing the change, for example main_gate, will publish main_gate_1 "ON" or "OFF" depending on the state. And if you want to ask the cloud what the gate status is, any device can publish "getstate" and each gate will respond with the status.
 
-## Adding additional files to your project
+If you want to tell a gate to skip a command, there is only a way to tell EVERY gate to skip the next X commands. You publish "skipcommand X" where X is a SINGLE DIGIT number (we only support setting 0-9 skips). So if you want main_gate to skip the next command and you want club_gate to NOT skip a command, you simply need to publish "skipcommand 1" and then publish any command to the club_gate (so a "club_gate_relay_1 1off" would do it, and the "1off is simply ignored).
 
-#### Projects with multiple sources
-If you would like add additional files to your application, they should be added to the `/src` folder. All files in the `/src` folder will be sent to the Particle Cloud to produce a compiled binary.
-
-#### Projects with external libraries
-If your project includes a library that has not been registered in the Particle libraries system, you should create a new folder named `/lib/<libraryname>/src` under `/<project dir>` and add the `.h`, `.cpp` & `library.properties` files for your library there. Read the [Firmware Libraries guide](https://docs.particle.io/guide/tools-and-features/libraries/) for more details on how to develop libraries. Note that all contents of the `/lib` folder and subfolders will also be sent to the Cloud for compilation.
+I have no recollection of why the gate names end in underscore-one. It just is what it is and I'm too lazy to fix it.
 
 ## Compiling your project
 
