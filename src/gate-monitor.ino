@@ -2,7 +2,7 @@
  * Project gate-monitor
  * Description: monitor the gates!
  * Author: Donnie Barnes <djb@donniebarnes.com>
- * Date: May 6, 2020
+ * Date: Dec 31, 2023
  */
 
 #include <LiquidCrystal_I2C_Spark.h>
@@ -110,6 +110,11 @@ void loop() {
         }
     }
 
+    if (buttonZeroClicks < 0) 
+    {
+        Particle.publish("skipcommand", "1", PRIVATE);
+    }
+
     if(buttonOne.clicks != 0) buttonOneClicks = buttonOne.clicks;
 
     if (buttonOneClicks == 1)
@@ -124,6 +129,11 @@ void loop() {
             Particle.publish("clubhouse_gate_relay_1", "1on", PRIVATE);
             buttonOneToggle = 1;
         }
+    }
+
+    if (buttonOneClicks < 0) 
+    {
+        Particle.publish("skipcommand", "1", PRIVATE);
     }
 
     buttonZeroClicks = 0;
