@@ -4,6 +4,7 @@ A Particle project named gate-monitor
 
 This just needs an LCD connected to I2C port and listens to the cloud for main_gate_1 and clubhouse_gate_1 events and prints an open/closed state when it sees those.
 
+(https://github.com/djb-rh/gate-monitor/blob/master/gate-monitor.jpg)
 
 ## Details
 
